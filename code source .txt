@@ -1,0 +1,46 @@
+affectation.mod 
+=====================
+// parameters 
+int n=...; //nombre des opérateurs  
+int m=...; //nombre des taches 
+int w=...; //nombre des équipes 
+
+range operateurs= 1..n; //intervalle des opérateurs 
+range taches = 1..m;   // varier les taches 
+range equipes = 1..w; //  varier les équipes 
+
+int notation[operateurs][taches] =...;  
+
+//variables
+dvar boolean affectation[operateurs][taches][equipes];  
+
+maximize Sum (i in operateurs, j in taches, k in equipes) notation[i][j]*affectation[i][j][k]  ;  
+
+subject to {
+forall (i in operateurs,j in taches)
+  unicite_aff_eq:  
+  sum (k in equipes) affectation[i][j][k]== 1;   
+forall (k in equipes,i in operateurs)
+  unicite_aff_tache:
+  sum (j in taches)affectation[i][j][k]== 1;
+forall (k in equipes,j in taches) 
+  contenir_opp: 
+  sum (i in operateurs)	affectation[i][j][k]>= 1; 
+forall (i in operateurs,j in taches,k in equipes)
+  competence:   
+sum (i in operateurs,j in taches)
+notation[i][j]*affectation[i][j][k]>=6; 
+
+} 
+
+
+============ 
+affectation.dat 
+===================== 
+
+n=56; 
+m=6; 
+w=5; 
+
+SheetConnection my_sheet ("affectation.xlsx");  
+notation from sheetread(my_sheet,"notation"); 
